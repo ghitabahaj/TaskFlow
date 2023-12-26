@@ -1,5 +1,6 @@
 package com.youcode.taskflow.entities;
 
+import com.youcode.taskflow.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
@@ -27,27 +28,23 @@ public class Task {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @FutureOrPresent(message = "La date de début doit être dans le présent ou le futur.")
-    @NotNull(message = "La date de fin ne peut pas être vide.")
     private LocalDate startDate;
 
-    @NotEmpty(message = "Au moins un tag est requis.")
-    @ElementCollection
-    private List<String> tags;
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    private List<TaskTag> taskTags;
 
-    @Future(message = "La date de fin doit être dans le futur.")
-    @NotNull(message = "La date de fin ne peut pas être vide.")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
+    private String description;
 
-    @NotNull(message = "La tâche doit être marquée comme terminée avant la date limite.")
-    private Boolean completed;
+    private Status Taskstatus;
+
+    private boolean replaced;
+    private boolean deleted;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User assignedUser;
-
-
 
 }

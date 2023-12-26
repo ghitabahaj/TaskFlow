@@ -9,11 +9,11 @@ import java.util.List;
 @Service
 public interface TaskService {
 
-    List<Task> getAllTasks();
+    List<Task> findAll();
 
-    Task getTaskById(Long id);
+    Task findById(Long id);
 
-    Task createTask(Task task);
+    Task createTask(Task task, Long userId);
 
     Task updateTask(Long id, Task updatedTask);
 

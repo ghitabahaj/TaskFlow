@@ -13,7 +13,7 @@ public interface TaskService {
 
     Task findById(Long id);
 
-    Task createTask(Task task, Long userId);
+    Task createTask(Task task, Long userId , List<String> tagNames);
 
     Task updateTask(Long id, Task updatedTask);
 

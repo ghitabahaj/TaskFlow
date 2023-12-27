@@ -25,5 +25,4 @@ public class TaskTag {
     @JoinColumn(name = "tag_id")
     private Tag tag;
 
-
 }

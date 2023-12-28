@@ -1,6 +1,8 @@
 package com.youcode.taskflow.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +19,7 @@ public class TaskTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "task_id")
     private Task task;

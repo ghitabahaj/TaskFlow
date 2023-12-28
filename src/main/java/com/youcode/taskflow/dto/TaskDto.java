@@ -1,16 +1,20 @@
 package com.youcode.taskflow.dto;
 
-import com.youcode.taskflow.entities.User;
+
+import com.youcode.taskflow.enums.TaskStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class TaskDto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,16 +25,17 @@ public class TaskDto {
     @NotNull(message = "La date de fin ne peut pas être vide.")
     private LocalDate startDate;
 
-    @NotEmpty(message = "Au moins un tag est requis.")
-    private List<String> tags;
-
     @Future(message = "La date de fin doit être dans le futur.")
     @NotNull(message = "La date de fin ne peut pas être vide.")
     private LocalDate endDate;
 
+    private String description;
 
-    @NotNull(message = "La tâche doit être marquée comme terminée avant la date limite.")
-    private Boolean completed;
+    private TaskStatus taskstatus;
 
-    private User assignedUser;
+    private boolean replaced;
+
+    private boolean deleted;
+
+
 }

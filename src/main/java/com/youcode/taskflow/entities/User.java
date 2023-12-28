@@ -1,6 +1,8 @@
 package com.youcode.taskflow.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.youcode.taskflow.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,6 +31,7 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "assignedUser", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Task> tasks;
 
 

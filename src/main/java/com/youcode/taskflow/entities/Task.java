@@ -1,11 +1,8 @@
 package com.youcode.taskflow.entities;
 
-import com.youcode.taskflow.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.youcode.taskflow.enums.TaskStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,7 +27,8 @@ public class Task {
 
     private LocalDate startDate;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<TaskTag> taskTags;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -38,7 +36,7 @@ public class Task {
 
     private String description;
 
-    private Status Taskstatus;
+    private TaskStatus taskstatus;
 
     private boolean replaced;
     private boolean deleted;

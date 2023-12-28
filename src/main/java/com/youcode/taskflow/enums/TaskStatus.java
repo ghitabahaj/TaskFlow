@@ -1,6 +1,6 @@
 package com.youcode.taskflow.enums;
 
-public enum Status {
+public enum TaskStatus {
     TO_DO,IN_PROGRESS,DONE
 
 }

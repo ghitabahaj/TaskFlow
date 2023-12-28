@@ -1,6 +1,7 @@
 package com.youcode.taskflow.service.impl;
 
 
+import com.youcode.taskflow.dto.TaskDto;
 import com.youcode.taskflow.entities.Tag;
 import com.youcode.taskflow.entities.Task;
 import com.youcode.taskflow.entities.TaskTag;
@@ -46,19 +47,15 @@ public class TaskServiceImpl implements TaskService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé."));
 
-        if (task.getStartDate() != null && task.getStartDate().isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("La date de début de la tâche ne peut pas être dans le passé.");
-        }
-
-        if (task.getStartDate() != null && task.getStartDate().isAfter(LocalDate.now().plusDays(3))) {
-            throw new IllegalArgumentException("La planification de la tâche est limitée à 3 jours à l'avance.");
-        }
+        validateTaskDate(task);
 
         if (tagNames == null || tagNames.isEmpty()) {
             throw new IllegalArgumentException("Au moins un tag est requis pour la tâche.");
         }
 
-        List<Tag> tags = new ArrayList<>();
+        task.setAssignedUser(user);
+        Task savedTask = taskRepository.save(task);
+
         for (String tagName : tagNames) {
             Tag tag = tagRepository.findByTagName(tagName);
             if (tag == null) {
@@ -66,18 +63,24 @@ public class TaskServiceImpl implements TaskService {
                 tag.setTagName(tagName);
                 tagRepository.save(tag);
             }
-            tags.add(tag);
-        }
 
-        for (Tag tag : tags) {
             TaskTag taskTag = new TaskTag();
-            taskTag.setTask(task);
+            taskTag.setTask(savedTask);
             taskTag.setTag(tag);
             taskTagRepository.save(taskTag);
         }
 
-        task.setAssignedUser(user);
-        return taskRepository.save(task);
+        return savedTask;
+    }
+
+    private void validateTaskDate(Task task) {
+        if (task.getStartDate() != null && task.getStartDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("La date de début de la tâche ne peut pas être dans le passé.");
+        }
+
+        if (task.getStartDate() != null && task.getStartDate().isAfter(LocalDate.now().plusDays(3))) {
+            throw new IllegalArgumentException("La planification de la tâche est limitée à 3 jours à l'avance.");
+        }
     }
 
     @Override
@@ -117,6 +120,7 @@ public class TaskServiceImpl implements TaskService {
 
         return true;
     }
+
 
 
 }

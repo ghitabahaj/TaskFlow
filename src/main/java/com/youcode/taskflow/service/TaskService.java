@@ -3,6 +3,7 @@ package com.youcode.taskflow.service;
 
 import com.youcode.taskflow.dto.TaskDto;
 import com.youcode.taskflow.entities.Task;
+import com.youcode.taskflow.enums.RequestStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,10 @@ public interface TaskService {
     Task updateTask(Long id, Task updatedTask);
 
      void deleteTask(Long id);
+
+    void requestTaskModification(Long taskId, Long userId);
+
+    void respondToTaskModificationRequest(Long requestId, RequestStatus status);
 
 
 }

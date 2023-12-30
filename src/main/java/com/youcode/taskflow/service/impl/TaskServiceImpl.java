@@ -2,16 +2,11 @@ package com.youcode.taskflow.service.impl;
 
 
 import com.youcode.taskflow.dto.TaskDto;
-import com.youcode.taskflow.entities.Tag;
-import com.youcode.taskflow.entities.Task;
-import com.youcode.taskflow.entities.TaskTag;
-import com.youcode.taskflow.entities.User;
+import com.youcode.taskflow.entities.*;
+import com.youcode.taskflow.enums.RequestStatus;
 import com.youcode.taskflow.enums.Role;
 import com.youcode.taskflow.enums.TaskStatus;
-import com.youcode.taskflow.repository.TagRepository;
-import com.youcode.taskflow.repository.TaskRepository;
-import com.youcode.taskflow.repository.TaskTagRepository;
-import com.youcode.taskflow.repository.UserRepository;
+import com.youcode.taskflow.repository.*;
 import com.youcode.taskflow.service.TaskService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +27,9 @@ public class TaskServiceImpl implements TaskService {
     private final TagRepository tagRepository;
 
     private final TaskTagRepository taskTagRepository;
+
+    private final RequestRepository requestRepository;
+
 
 
     @Override
@@ -118,6 +116,37 @@ public class TaskServiceImpl implements TaskService {
             taskRepository.deleteById(id);
         } else {
             throw new IllegalStateException("La suppression de la tâche n'est pas autorisée selon les contraintes spécifiées.");
+        }
+    }
+
+    @Override
+    public void requestTaskModification(Long taskId, Long userId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new EntityNotFoundException("Tâche non trouvée."));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé."));
+
+        Request request = new Request();
+        request.setUser(user);
+        request.setTask(task);
+        request.setStatus(RequestStatus.PENDING);
+
+        requestRepository.save(request);
+    }
+
+    @Override
+    public void respondToTaskModificationRequest(Long requestId, RequestStatus status) {
+        Request request = requestRepository.findById(requestId)
+                .orElseThrow(() -> new EntityNotFoundException("Demande de modification non trouvée."));
+
+
+        request.setStatus(status);
+        requestRepository.save(request);
+
+
+        if (status == RequestStatus.ACCEPTED) {
+
         }
     }
 

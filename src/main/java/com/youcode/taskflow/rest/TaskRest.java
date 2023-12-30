@@ -1,5 +1,6 @@
 package com.youcode.taskflow.rest;
 
+import com.youcode.taskflow.Mapper.CycleAvoidingMappingContext;
 import com.youcode.taskflow.Mapper.TaskMapper;
 import com.youcode.taskflow.dto.TaskDto;
 import com.youcode.taskflow.entities.Task;
@@ -29,10 +30,10 @@ public class TaskRest {
             @RequestBody TaskDto taskRequestDto,
             @RequestParam Long userId,
             @RequestParam List<String> tagNames) {
-
-        Task task = taskMapper.dtoToEntity(taskRequestDto);
+        CycleAvoidingMappingContext context = new CycleAvoidingMappingContext();
+        Task task = taskMapper.dtoToEntity(taskRequestDto,context);
         Task createdTask = taskService.createTask(task, userId, tagNames);
-        TaskDto taskDto = taskMapper.entityToDto(createdTask);
+        TaskDto taskDto = taskMapper.entityToDto(createdTask,context);
 
         return new ResponseEntity<>(taskDto, HttpStatus.CREATED);
 

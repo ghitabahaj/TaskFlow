@@ -6,6 +6,8 @@ import com.youcode.taskflow.entities.Tag;
 import com.youcode.taskflow.entities.Task;
 import com.youcode.taskflow.entities.TaskTag;
 import com.youcode.taskflow.entities.User;
+import com.youcode.taskflow.enums.Role;
+import com.youcode.taskflow.enums.TaskStatus;
 import com.youcode.taskflow.repository.TagRepository;
 import com.youcode.taskflow.repository.TaskRepository;
 import com.youcode.taskflow.repository.TaskTagRepository;
@@ -69,7 +71,9 @@ public class TaskServiceImpl implements TaskService {
             taskTag.setTag(tag);
             taskTagRepository.save(taskTag);
         }
-
+        if (user.getRole() == Role.MANAGER && task.getAssignedUser() == null) {
+            throw new IllegalArgumentException("Le manager ne peut pas laisser une tâche sans être affecté.");
+        }
         return savedTask;
     }
 
@@ -87,14 +91,21 @@ public class TaskServiceImpl implements TaskService {
     public Task updateTask(Long id, Task updatedTask) {
         Task existingTask = taskRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Tâche non trouvée."));
+
         if (isTaskUpdateAllowed(existingTask, updatedTask)) {
-
-
+            if (taskDeadlineNotExceeded(existingTask)) {
+                existingTask.setTaskstatus(TaskStatus.DONE);
+            } else {
+                throw new IllegalStateException("La mise à jour de la tâche n'est pas autorisée car la date limite est dépassée.");
+            }
             return taskRepository.save(existingTask);
         } else {
             throw new IllegalStateException("La mise à jour de la tâche n'est pas autorisée selon les contraintes spécifiées.");
         }
+    }
 
+    private boolean taskDeadlineNotExceeded(Task task) {
+        return task.getEndDate() == null || task.getEndDate().isAfter(LocalDate.now());
     }
 
     @Override

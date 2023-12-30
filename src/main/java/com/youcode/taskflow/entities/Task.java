@@ -1,5 +1,6 @@
 package com.youcode.taskflow.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.youcode.taskflow.enums.TaskStatus;
 import jakarta.persistence.*;
@@ -43,6 +44,12 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User assignedUser;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by_user_id")
+    @JsonBackReference
+    private User createdBy;
 
 }

@@ -1,6 +1,7 @@
 package com.youcode.taskflow.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.youcode.taskflow.enums.TaskStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
@@ -36,6 +37,8 @@ public class TaskDto {
     private boolean replaced;
 
     private boolean deleted;
+
+    private UserDto assignedUser;
 
 
 }

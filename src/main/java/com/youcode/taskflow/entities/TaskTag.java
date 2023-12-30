@@ -22,10 +22,12 @@ public class TaskTag {
 
     @ManyToOne
     @JoinColumn(name = "task_id")
+    @JsonIgnore
     private Task task;
 
     @ManyToOne
     @JoinColumn(name = "tag_id")
+    @JsonIgnore
     private Tag tag;
 
 }

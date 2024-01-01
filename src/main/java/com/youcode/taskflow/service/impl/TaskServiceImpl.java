@@ -7,6 +7,7 @@ import com.youcode.taskflow.enums.RequestStatus;
 import com.youcode.taskflow.enums.Role;
 import com.youcode.taskflow.enums.TaskStatus;
 import com.youcode.taskflow.repository.*;
+import com.youcode.taskflow.service.JetonService;
 import com.youcode.taskflow.service.TaskService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,8 @@ public class TaskServiceImpl implements TaskService {
     private final TaskTagRepository taskTagRepository;
 
     private final RequestRepository requestRepository;
+
+    private final JetonService jetonService;
 
 
 
@@ -96,6 +99,8 @@ public class TaskServiceImpl implements TaskService {
         if (isTaskUpdateAllowed(existingTask, updatedTask)) {
             if (taskDeadlineNotExceeded(existingTask)) {
                 existingTask.setTaskstatus(TaskStatus.DONE);
+
+                deductTokensForUpdate(existingTask.getAssignedUser().getId());
             } else {
                 throw new IllegalStateException("La mise à jour de la tâche n'est pas autorisée car la date limite est dépassée.");
             }
@@ -153,7 +158,22 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    private void deductTokensForUpdate(Long userId) {
+        jetonService.deductReplacementToken(userId);
+    }
+
+
     private boolean isTaskUpdateAllowed(Task existingTask, Task updatedTask) {
+
+        User user = existingTask.getAssignedUser();
+
+        if (user == null) {
+            throw new IllegalStateException("La tâche doit être assignée à un utilisateur pour être mise à jour.");
+        }
+
+        if (!jetonService.canReplaceTask(user.getId())) {
+            throw new IllegalStateException("L'utilisateur n'a pas suffisamment de jetons de remplacement pour mettre à jour la tâche.");
+        }
 
         return true;
     }

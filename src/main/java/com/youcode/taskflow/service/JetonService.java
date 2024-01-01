@@ -10,5 +10,6 @@ public interface JetonService {
     void deductReplacementToken(Long userId);
 
     void deductDeletionToken(Long userId);
+    void doubleModificationTokens(Long UserId);
 
 }

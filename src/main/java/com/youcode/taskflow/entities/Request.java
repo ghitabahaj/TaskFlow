@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -29,5 +31,9 @@ public class Request {
 
     @Enumerated(EnumType.STRING)
     private RequestStatus status;
+
+    @Column(name = "creation_time")
+    private LocalDateTime creationTime;
+
 
 }

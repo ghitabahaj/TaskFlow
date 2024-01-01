@@ -53,15 +53,16 @@ public class JetonServiceImpl implements JetonService {
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * ?")
-    public void doubleModificationTokens() {
-        List<Jeton> allJetons = jetonRepository.findAll();
-        for (Jeton jeton : allJetons) {
-            if (jeton.getModificationRequests() > 0 && jeton.getLastModificationResponse() == null
-                    || Duration.between(jeton.getLastModificationResponse(), LocalDateTime.now()).toHours() > 12) {
-                jeton.setDailyReplacementTokens(jeton.getDailyReplacementTokens() * 2);
-                jetonRepository.save(jeton);
-            }
-        }
+  @Override
+    public void doubleModificationTokens(Long userId) {
+      Jeton jeton = jetonRepository.findByUserId(userId)
+              .orElseThrow(() -> new IllegalArgumentException("Jeton not found for user: " + userId));
+
+      if (jeton.getModificationRequests() > 0 && (jeton.getLastModificationResponse() == null
+              || Duration.between(jeton.getLastModificationResponse(), LocalDateTime.now()).toHours() > 12)) {
+          jeton.setDailyReplacementTokens(jeton.getDailyReplacementTokens() * 2);
+          jeton.setLastModificationResponse(LocalDateTime.now());
+          jetonRepository.save(jeton);
+      }
     }
 }

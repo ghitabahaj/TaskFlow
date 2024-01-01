@@ -3,6 +3,7 @@ package com.youcode.taskflow.service;
 
 import com.youcode.taskflow.dto.TaskDto;
 import com.youcode.taskflow.entities.Task;
+import com.youcode.taskflow.entities.User;
 import com.youcode.taskflow.enums.RequestStatus;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,8 @@ public interface TaskService {
     void requestTaskModification(Long taskId, Long userId);
 
     void respondToTaskModificationRequest(Long requestId, RequestStatus status);
+
+    void replaceTask(Task task, User newUser);
 
 
 }

@@ -122,6 +122,7 @@ public class TaskServiceImpl implements TaskService {
 
         if (isTaskDeletionAllowed(taskToDelete)) {
             taskRepository.deleteById(id);
+            taskToDelete.setDeleted(true);
         } else {
             throw new IllegalStateException("La suppression de la tâche n'est pas autorisée selon les contraintes spécifiées.");
         }
@@ -135,12 +136,16 @@ public class TaskServiceImpl implements TaskService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé."));
 
-        Request request = new Request();
-        request.setUser(user);
-        request.setTask(task);
-        request.setStatus(RequestStatus.PENDING);
+        if (!task.isReplaced()) {
+            Request request = new Request();
+            request.setUser(user);
+            request.setTask(task);
+            request.setStatus(RequestStatus.PENDING);
 
-        requestRepository.save(request);
+            requestRepository.save(request);
+        } else {
+            throw new IllegalStateException("La tâche a déjà été remplacée.");
+        }
     }
 
     @Override
@@ -148,14 +153,25 @@ public class TaskServiceImpl implements TaskService {
         Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new EntityNotFoundException("Demande de modification non trouvée."));
 
+        if (request.getStatus() == RequestStatus.PENDING) {
+            request.setStatus(status);
+            requestRepository.save(request);
 
-        request.setStatus(status);
-        requestRepository.save(request);
-
-
-        if (status == RequestStatus.ACCEPTED) {
-
+            if (status == RequestStatus.ACCEPTED) {
+                replaceTask(request.getTask(), request.getUser());
+            }
+        } else {
+            throw new IllegalStateException("La demande de modification a déjà été traitée.");
         }
+    }
+
+
+    @Override
+    public void replaceTask(Task task, User newUser) {
+        task.setAssignedUser(newUser);
+        task.setReplaced(true);
+        taskRepository.save(task);
+        jetonService.deductReplacementToken(newUser.getId());
     }
 
     private void deductTokensForUpdate(Long userId) {

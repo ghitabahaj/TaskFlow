@@ -35,5 +35,13 @@ public class Request {
     @Column(name = "creation_time")
     private LocalDateTime creationTime;
 
+    @ManyToOne
+    @JoinColumn(name = "processed_by_user_id")
+    private User processedBy;
+
+
+    private LocalDateTime processedTime;
+
+
 
 }

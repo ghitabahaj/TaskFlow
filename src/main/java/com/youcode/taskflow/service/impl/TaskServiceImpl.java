@@ -54,6 +54,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
         task.setAssignedUser(user);
+        task.setCreatedBy(user);
         Task savedTask = taskRepository.save(task);
 
         for (String tagName : tagNames) {
@@ -69,9 +70,11 @@ public class TaskServiceImpl implements TaskService {
             taskTag.setTag(tag);
             taskTagRepository.save(taskTag);
         }
+
         if (user.getRole() == Role.MANAGER && task.getAssignedUser() == null) {
             throw new IllegalArgumentException("Le manager ne peut pas laisser une tâche sans être affecté.");
         }
+
         return savedTask;
     }
 

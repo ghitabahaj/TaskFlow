@@ -181,7 +181,30 @@ public class TaskServiceImpl implements TaskService {
 
     private boolean isTaskDeletionAllowed(Task taskToDelete) {
 
-        return true;
+        if (taskToDelete.isDeleted()) {
+            throw new IllegalStateException("La tâche a déjà été supprimée.");
+        }
+
+        User createdByUser = taskToDelete.getCreatedBy();
+        if (createdByUser != null && createdByUser.equals(taskToDelete.getAssignedUser())) {
+            return true;
+        }
+        User assignedUser = taskToDelete.getAssignedUser();
+        if (assignedUser == null) {
+            throw new IllegalStateException("La tâche doit être assignée à un utilisateur pour être supprimée.");
+        }
+
+        if (assignedUser.getRole() == Role.MANAGER) {
+            return true;
+        }
+
+        Jeton jeton = assignedUser.getJeton();
+        if (jeton.getMonthlyDeletionTokens() > 0) {
+           jetonService.deductDeletionToken(assignedUser.getId());
+            return true;
+        } else {
+            throw new IllegalStateException("L'utilisateur n'a pas suffisamment de jetons de suppression mensuels pour supprimer la tâche.");
+        }
     }
 
 

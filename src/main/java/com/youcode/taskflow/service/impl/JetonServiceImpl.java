@@ -40,6 +40,19 @@ public class JetonServiceImpl implements JetonService {
         }
     }
 
+    @Override
+    public void deductDeletionToken(Long userId) {
+        Jeton jeton = jetonRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Jeton not found for user: " + userId));
+
+        if (jeton.getMonthlyDeletionTokens() > 0) {
+            jeton.setMonthlyDeletionTokens(jeton.getMonthlyDeletionTokens() - 1);
+            jetonRepository.save(jeton);
+        } else {
+            throw new IllegalStateException("No monthly deletion tokens available.");
+        }
+    }
+
     @Scheduled(cron = "0 0 0 * * ?")
     public void doubleModificationTokens() {
         List<Jeton> allJetons = jetonRepository.findAll();

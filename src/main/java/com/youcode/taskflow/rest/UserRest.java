@@ -21,7 +21,6 @@ public class UserRest {
     private TaskService taskService;
     @PostMapping("/create")
     public ResponseEntity<?> createUser(@Valid @RequestBody User user) {
-
             User createdUser = userService.addUser(user);
             return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
 

@@ -28,48 +28,37 @@ public class TaskRest {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<TaskDto>> getAllTasks() {
-        CycleAvoidingMappingContext context = new CycleAvoidingMappingContext();
+    public ResponseEntity<List<Task>> getAllTasks() {
         List<Task> tasks = taskService.findAll();
-        List<TaskDto> taskDtos = tasks.stream()
-                .map(task -> taskMapper.entityToDto(task, context))
-                .collect(Collectors.toList());
 
-        return new ResponseEntity<>(taskDtos, HttpStatus.OK);
+        return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
 
     @GetMapping("/{taskId}")
-    public ResponseEntity<TaskDto> getTaskById(@PathVariable Long taskId) {
-        CycleAvoidingMappingContext context = new CycleAvoidingMappingContext();
-        Task task = taskService.findById(taskId);
-        TaskDto taskDto = taskMapper.entityToDto(task, context);
+    public ResponseEntity<Task> getTaskById(@PathVariable Long taskId) {
 
-        return new ResponseEntity<>(taskDto, HttpStatus.OK);
+        Task task = taskService.findById(taskId);
+
+        return new ResponseEntity<>(task, HttpStatus.OK);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<TaskDto> createTask(
-            @RequestBody TaskDto taskRequestDto,
+    public ResponseEntity<Task> createTask(
+            @RequestBody Task task,
             @RequestParam Long userId,
             @RequestParam List<String> tagNames) {
-        CycleAvoidingMappingContext context = new CycleAvoidingMappingContext();
-        Task task = taskMapper.dtoToEntity(taskRequestDto, context);
         Task createdTask = taskService.createTask(task, userId, tagNames);
-        TaskDto taskDto = taskMapper.entityToDto(createdTask, context);
 
-        return new ResponseEntity<>(taskDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{taskId}")
-    public ResponseEntity<TaskDto> updateTask(
+    public ResponseEntity<Task> updateTask(
             @PathVariable Long taskId,
-            @RequestBody TaskDto updatedTaskDto) {
-        CycleAvoidingMappingContext context = new CycleAvoidingMappingContext();
-        Task updatedTask = taskMapper.dtoToEntity(updatedTaskDto, context);
+            @RequestBody Task updatedTask) {
         Task updatedTaskResult = taskService.updateTask(taskId, updatedTask);
-        TaskDto taskDto = taskMapper.entityToDto(updatedTaskResult, context);
 
-        return new ResponseEntity<>(taskDto, HttpStatus.OK);
+        return new ResponseEntity<>(updatedTaskResult, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{taskId}")

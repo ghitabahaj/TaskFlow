@@ -44,10 +44,12 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User assignedUser;
 
     @ManyToOne
     @JoinColumn(name = "created_by_user_id")
+    @JsonIgnore
     private User createdBy;
 
 

@@ -29,7 +29,7 @@ public class Jeton {
     private User user;
 
     @Column(name = "modification_requests")
-    private int modificationRequests;
+    private Integer  modificationRequests;
 
     @Column(name = "last_modification_response")
     private LocalDateTime lastModificationResponse;

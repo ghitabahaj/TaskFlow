@@ -49,6 +49,7 @@ public class TaskServiceImpl implements TaskService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé."));
 
+        task.setTaskstatus(TaskStatus.TO_DO);
         validateTaskDate(task);
 
         if (tagNames == null || tagNames.isEmpty()) {
@@ -97,10 +98,10 @@ public class TaskServiceImpl implements TaskService {
 
         if (isTaskUpdateAllowed(existingTask, updatedTask)) {
             if (taskDeadlineNotExceeded(existingTask)) {
-                existingTask.setTaskstatus(TaskStatus.DONE);
-
-                deductTokensForUpdate(existingTask.getAssignedUser().getId());
+                existingTask.setTaskstatus(updatedTask.getTaskstatus());
+                existingTask.setDescription(updatedTask.getDescription());
             } else {
+                existingTask.setTaskstatus(TaskStatus.DONE);
                 throw new IllegalStateException("La mise à jour de la tâche n'est pas autorisée car la date limite est dépassée.");
             }
             return taskRepository.save(existingTask);
@@ -135,6 +136,10 @@ public class TaskServiceImpl implements TaskService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé."));
 
+        if(task.getAssignedUser()!=user){
+            throw new IllegalStateException("Vous pouvez pas remplacer une tache non assigne a vous");
+        }
+
         if (!task.isReplaced()) {
             Request request = new Request();
             request.setUser(user);
@@ -157,10 +162,6 @@ public class TaskServiceImpl implements TaskService {
         jetonService.deductReplacementToken(newUser.getId());
     }
 
-    private void deductTokensForUpdate(Long userId) {
-        jetonService.deductReplacementToken(userId);
-    }
-
 
     private boolean isTaskUpdateAllowed(Task existingTask, Task updatedTask) {
 
@@ -168,10 +169,6 @@ public class TaskServiceImpl implements TaskService {
 
         if (user == null) {
             throw new IllegalStateException("La tâche doit être assignée à un utilisateur pour être mise à jour.");
-        }
-
-        if (!jetonService.canReplaceTask(user.getId())) {
-            throw new IllegalStateException("L'utilisateur n'a pas suffisamment de jetons de remplacement pour mettre à jour la tâche.");
         }
 
         return true;

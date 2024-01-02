@@ -79,6 +79,7 @@ public class RequestServiceImpl implements RequestService {
 
                 if (status == RequestStatus.ACCEPTED) {
                     taskService.replaceTask(request.getTask(),User);
+                    jetonService.deductReplacementToken(request.getTask().getAssignedUser().getId());
                 }
             } else {
                 throw new IllegalStateException("La demande de modification a déjà été traitée.");

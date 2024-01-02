@@ -31,7 +31,7 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "assignedUser", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Task> tasks;
 
 

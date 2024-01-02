@@ -44,12 +44,10 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
     private User assignedUser;
 
     @ManyToOne
     @JoinColumn(name = "created_by_user_id")
-    @JsonBackReference
     private User createdBy;
 
 

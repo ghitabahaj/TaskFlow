@@ -2,6 +2,7 @@ package com.youcode.taskflow.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.youcode.taskflow.entities.User;
 import com.youcode.taskflow.enums.TaskStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
@@ -16,6 +17,8 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+
 public class TaskDto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +42,8 @@ public class TaskDto {
     private boolean deleted;
 
     private UserDto assignedUser;
+
+    private UserDto  createdBy;
 
 
 }

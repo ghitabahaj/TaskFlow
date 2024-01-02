@@ -36,7 +36,7 @@ public class RequestServiceImpl implements RequestService {
         this.taskService = taskService;
     }
 
-    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(cron = "0 0 3 * * ?")
     public void checkUnansweredRequests() {
         try {
             List<Request> unansweredRequests = requestRepository

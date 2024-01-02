@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1704182016342-1" author="adel (generated)">
+        <addColumn tableName="request">
+            <column name="creation_time" type="DATETIME"/>
+            <column name="processed_by_user_id" type="BIGINT"/>
+            <column name="processed_time" type="DATETIME"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1704182016342-4" author="adel (generated)">
+        <addForeignKeyConstraint baseColumnNames="processed_by_user_id" baseTableName="request"
+                                 constraintName="FK_REQUEST_ON_PROCESSED_BY_USER" referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+</databaseChangeLog>

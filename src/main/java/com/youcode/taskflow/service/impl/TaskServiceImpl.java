@@ -34,7 +34,6 @@ public class TaskServiceImpl implements TaskService {
     private final JetonService jetonService;
 
 
-
     @Override
     public List<Task> findAll() {
         return taskRepository.findAll();

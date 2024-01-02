@@ -86,11 +86,5 @@ public class TaskRest {
         return new ResponseEntity<>("Modification request sent successfully.", HttpStatus.OK);
     }
 
-    @PostMapping("/respond-to-modification-request/{requestId}/{status}")
-    public ResponseEntity<String> respondToTaskModificationRequest(
-            @PathVariable Long requestId,
-            @PathVariable RequestStatus status) {
-        taskService.respondToTaskModificationRequest(requestId, status);
-        return new ResponseEntity<>("Response to modification request processed successfully.", HttpStatus.OK);
-    }
+
 }

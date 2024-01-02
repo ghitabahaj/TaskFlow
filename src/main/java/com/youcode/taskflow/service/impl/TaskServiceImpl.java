@@ -147,22 +147,6 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    @Override
-    public void respondToTaskModificationRequest(Long requestId, RequestStatus status) {
-        Request request = requestRepository.findById(requestId)
-                .orElseThrow(() -> new EntityNotFoundException("Demande de modification non trouvée."));
-
-        if (request.getStatus() == RequestStatus.PENDING) {
-            request.setStatus(status);
-            requestRepository.save(request);
-
-            if (status == RequestStatus.ACCEPTED) {
-                replaceTask(request.getTask(), request.getUser());
-            }
-        } else {
-            throw new IllegalStateException("La demande de modification a déjà été traitée.");
-        }
-    }
 
 
     @Override

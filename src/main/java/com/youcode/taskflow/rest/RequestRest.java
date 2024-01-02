@@ -20,13 +20,14 @@ public class RequestRest {
         this.requestService = requestService;
     }
 
-    @PostMapping("/respond-to-modification-request/{requestId}/{status}/{managerId}")
+    @PostMapping("/respond-to-modification-request/{requestId}/{status}/{managerId}/{userId}")
     public ResponseEntity<String> respondToTaskModificationRequest(
             @PathVariable Long requestId,
             @PathVariable RequestStatus status,
-            @PathVariable Long managerId) {
+            @PathVariable Long managerId,
+            @PathVariable Long userId) {
         try {
-            requestService.respondToTaskModificationRequest(requestId, status, managerId);
+            requestService.respondToTaskModificationRequest(requestId, status, managerId, userId);
             return new ResponseEntity<>("Response to modification request processed successfully.", HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>("Request not found.", HttpStatus.NOT_FOUND);

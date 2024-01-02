@@ -58,12 +58,16 @@ public class RequestServiceImpl implements RequestService {
 
 
     @Override
-    public void respondToTaskModificationRequest(Long requestId, RequestStatus status, Long managerId) {
+    public void respondToTaskModificationRequest(Long requestId, RequestStatus status, Long managerId , Long userId) {
         Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new EntityNotFoundException("Demande de modification non trouvée."));
 
         User manager = userRepository.findById(managerId)
                 .orElseThrow(() -> new EntityNotFoundException("Manager non trouvé."));
+
+        User User = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé."));
+
 
 
         if (manager.getRole() == Role.MANAGER) {
@@ -74,7 +78,7 @@ public class RequestServiceImpl implements RequestService {
                 requestRepository.save(request);
 
                 if (status == RequestStatus.ACCEPTED) {
-                    taskService.replaceTask(request.getTask(), request.getUser());
+                    taskService.replaceTask(request.getTask(),User);
                 }
             } else {
                 throw new IllegalStateException("La demande de modification a déjà été traitée.");

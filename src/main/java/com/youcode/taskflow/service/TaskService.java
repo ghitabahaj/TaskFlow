@@ -24,7 +24,6 @@ public interface TaskService {
 
     void requestTaskModification(Long taskId, Long userId);
 
-    void respondToTaskModificationRequest(Long requestId, RequestStatus status);
 
     void replaceTask(Task task, User newUser);
 

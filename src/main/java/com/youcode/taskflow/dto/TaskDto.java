@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Getter
@@ -20,9 +21,7 @@ import java.time.LocalDate;
 @Builder
 
 public class TaskDto {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+
     private Long id;
 
     @FutureOrPresent(message = "La date de début doit être dans le présent ou le futur.")
@@ -41,9 +40,11 @@ public class TaskDto {
 
     private boolean deleted;
 
-    private UserDto assignedUser;
+    private Long assignedUserId;
 
-    private UserDto  createdBy;
+    private Long createdById;
+
+    private List<TaskTagDto> taskTags;
 
 
 }

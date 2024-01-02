@@ -3,10 +3,7 @@ package com.youcode.taskflow.entities;
 
 import com.youcode.taskflow.enums.RequestStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -16,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
+@Builder
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,9 +38,6 @@ public class Request {
     @JoinColumn(name = "processed_by_user_id")
     private User processedBy;
 
-
     private LocalDateTime processedTime;
-
-
 
 }

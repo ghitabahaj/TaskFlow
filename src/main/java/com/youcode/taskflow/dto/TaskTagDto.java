@@ -10,6 +10,6 @@ import lombok.*;
 @Builder
 public class TaskTagDto {
     private Long id;
-    private TaskDto task;
-    private TagDto tag;
+    private Long taskId;
+    private Long tagId;
 }

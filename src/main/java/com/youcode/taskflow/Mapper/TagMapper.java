@@ -12,5 +12,5 @@ public interface TagMapper {
 
     TagDto entityToDto(Tag tag);
 
-    Tag dtoToEntity(TagDto userDTO);
+    Tag dtoToEntity(TagDto tagDto);
 }

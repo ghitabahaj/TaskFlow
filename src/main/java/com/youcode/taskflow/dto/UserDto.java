@@ -19,5 +19,5 @@ public class UserDto {
     private String username;
     private Role role;
     private List<Long> taskIds;
-    private Long jetonId;
+    private JetonDto jeton;
 }

@@ -40,11 +40,11 @@ public class TaskDto {
 
     private boolean deleted;
 
-    private Long assignedUserId;
+    private UserDto assignedUser;
 
-    private Long createdById;
+    private UserDto createdBy;
 
-    private List<TaskTagDto> taskTags;
+    private  List<TaskTagDto> taskTags;
 
 
 }

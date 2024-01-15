@@ -11,6 +11,7 @@ import com.youcode.taskflow.service.JetonService;
 import com.youcode.taskflow.service.TaskService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -200,6 +201,19 @@ public class TaskServiceImpl implements TaskService {
             return true;
         } else {
             throw new IllegalStateException("L'utilisateur n'a pas suffisamment de jetons de suppression mensuels pour supprimer la tâche.");
+        }
+    }
+
+
+    @Scheduled(cron = "0 0 0 * * *")
+    public void updateTaskStatus() {
+        List<Task> allTasks = taskRepository.findAll();
+
+        for (Task task : allTasks) {
+            if (task.getEndDate() != null && task.getEndDate().isBefore(LocalDate.now())) {
+                task.setTaskstatus(TaskStatus.DONE);
+                 updateTask(task.getId(), task);
+            }
         }
     }
 

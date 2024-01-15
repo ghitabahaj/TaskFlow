@@ -41,15 +41,19 @@ public class TaskRest {
 
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
-
     @PostMapping("/create")
-    public ResponseEntity<Task> createTask(
-            @RequestBody Task task,
+    public ResponseEntity<TaskDto> createTask(
+            @RequestBody TaskDto taskDto,
             @RequestParam Long userId,
             @RequestParam List<String> tagNames) {
+
+        Task task = taskMapper.dtoToEntity(taskDto);
+
         Task createdTask = taskService.createTask(task, userId, tagNames);
 
-        return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
+        TaskDto createdTaskDto = taskMapper.entityToDto(createdTask);
+
+        return new ResponseEntity<>(createdTaskDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{taskId}")

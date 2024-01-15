@@ -8,12 +8,21 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring", uses = {UserMapper.class, TaskTagMapper.class})
 public interface TaskMapper {
-   TaskMapper INSTANCE = Mappers.getMapper(TaskMapper.class);
+    TaskMapper INSTANCE = Mappers.getMapper(TaskMapper.class);
 
-    TaskDto entityToDto(Task task ,@Context CycleAvoidingMappingContext context);
 
-    @Mapping(target = "assignedUser", ignore = true)
-    Task dtoToEntity(TaskDto taskDto,@Context CycleAvoidingMappingContext context);
+    @Mapping(source = "assignedUser", target = "assignedUser")
+    @Mapping(source = "createdBy", target = "createdBy")
+    @Mapping(source = "taskTags", target = "taskTags")
+    Task dtoToEntity(TaskDto taskDto);
+
+
+    @Mapping(source = "assignedUser", target = "assignedUser")
+    @Mapping(source = "createdBy", target = "createdBy")
+    @Mapping(source = "taskTags", target = "taskTags")
+    TaskDto entityToDto(Task task);
 }

@@ -27,7 +27,6 @@ public class Task {
     private LocalDate startDate;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
-    @JsonIgnore
     private List<TaskTag> taskTags;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -42,12 +41,10 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private User assignedUser;
 
     @ManyToOne
     @JoinColumn(name = "created_by_user_id")
-    @JsonIgnore
     private User createdBy;
 
 

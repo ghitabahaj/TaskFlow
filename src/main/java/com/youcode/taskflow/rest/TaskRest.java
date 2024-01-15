@@ -1,10 +1,8 @@
 package com.youcode.taskflow.rest;
 
-import com.youcode.taskflow.Mapper.CycleAvoidingMappingContext;
 import com.youcode.taskflow.Mapper.TaskMapper;
 import com.youcode.taskflow.dto.TaskDto;
 import com.youcode.taskflow.entities.Task;
-import com.youcode.taskflow.enums.RequestStatus;
 import com.youcode.taskflow.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,18 +26,24 @@ public class TaskRest {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Task>> getAllTasks() {
+    public ResponseEntity<List<TaskDto>> getAllTasks() {
         List<Task> tasks = taskService.findAll();
 
-        return new ResponseEntity<>(tasks, HttpStatus.OK);
+        List<TaskDto> taskDtos = tasks.stream()
+                .map(taskMapper::entityToDto)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(taskDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{taskId}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Long taskId) {
+    public ResponseEntity<TaskDto> getTaskById(@PathVariable Long taskId) {
 
         Task task = taskService.findById(taskId);
 
-        return new ResponseEntity<>(task, HttpStatus.OK);
+        TaskDto TaskDto = taskMapper.entityToDto(task);
+
+        return new ResponseEntity<>(TaskDto, HttpStatus.OK);
     }
     @PostMapping("/create")
     public ResponseEntity<TaskDto> createTask(
